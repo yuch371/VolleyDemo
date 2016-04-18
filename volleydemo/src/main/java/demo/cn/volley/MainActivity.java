@@ -34,9 +34,9 @@ public class MainActivity extends AppCompatActivity {
     Button mButton1,mButton2,mButton3;
     ImageView mImageView1,mImageView2;
     RequestQueue mRequestQueue;
-    RequestQueue mRequestQueueOKhttp;
-    //API23和V4都有
+    //API23和V4都有，图片的内存缓存
     LruCache <String ,Bitmap> mBitmapLruCache;
+    //网络图片组件
     com.android.volley.toolbox.NetworkImageView mNetworkImageView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,9 +49,10 @@ public class MainActivity extends AppCompatActivity {
     private void initData() {
         //第1步，实例化一个请求队列
         mRequestQueue= Volley.newRequestQueue(getApplicationContext());
+        //设置网图片组件的默认图片和错误时的图片
         mNetworkImageView.setDefaultImageResId(R.mipmap.ic_launcher);
         mNetworkImageView.setErrorImageResId(R.mipmap.ic_launcher);
-
+        //创建图片内存缓存的实力
         mBitmapLruCache=new LruCache<String ,Bitmap>((int) (Runtime.getRuntime().freeMemory()/8)){
             @Override
             protected int sizeOf(String key, Bitmap value) {
@@ -97,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void doNetImageView() {
         // mNetworkImageView.setImageResource(R.mipmap.ic_launcher);
-
+        //创建网络图片的ImageLoader，需要传递一个请求队列和缓存参数
         ImageLoader imageLoader = new ImageLoader(mRequestQueue, new ImageLoader.ImageCache() {
             @Override
             public Bitmap getBitmap(String s) {
@@ -109,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
                 mBitmapLruCache.put(s,bitmap);
             }
         });
+        //设置组件的图片网址，内部自动把下载任务添加到下载队列中
         mNetworkImageView.setImageUrl("http://www.pingwest.com/wp-content/uploads/2013/04/new_android_wallpaper.jpg",
                 imageLoader);
     }
@@ -119,19 +121,21 @@ public class MainActivity extends AppCompatActivity {
         //String url="http://www.pingwest.com/wp-content/uploads/2013/04/new_android_wallpaper.jpg";
 
         //第2步 生成一个XXX请求
-        //Method.POST
+        //Method.POST  Post方式需要一个map型的参数
         Map<String,String> map=new HashMap<String,String>();
         JSONObject params = new JSONObject(map);
 
         //StringRequest stringRequest=new StringRequest(url, new Response.Listener<String>() {
         //JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,url,params, new Response.Listener<JSONObject>() {
         //实际测试时不稳定
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,url,params, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,url,params,
+                new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject jsonObject) {
                 Toast.makeText(MainActivity.this, "下载的内容为:" + jsonObject.toString(), Toast.LENGTH_SHORT).show();
             }
-        }, new Response.ErrorListener() {
+        },
+                new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
                 Toast.makeText(MainActivity.this, "下载内容异常:"+volleyError.getMessage(), Toast.LENGTH_SHORT).show();
@@ -147,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
         //String url="http://www.pingwest.com/wp-content/uploads/2013/04/new_android_wallpaper.jpg";
 
         //第2步 生成一个XXX请求
-        //Method.POST
+        //Method.GET
         //StringRequest stringRequest=new StringRequest(url, new Response.Listener<String>() {
         JsonArrayRequest jsonArrayRequest=new JsonArrayRequest(url,new Response.Listener<JSONArray>(){
             @Override
