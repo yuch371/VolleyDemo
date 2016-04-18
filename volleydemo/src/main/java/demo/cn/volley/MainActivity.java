@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     //API23和V4都有，图片的内存缓存,
     LruCache<String,Bitmap>   mBitmapLruCache;
     //测试一下GitHub
-    
+
      //网络图片组件,
 
     RequestQueue mRequestQueueOKhttp;
