@@ -35,9 +35,10 @@ public class MainActivity extends AppCompatActivity {
     ImageView mImageView1,mImageView2;
     RequestQueue mRequestQueue;
     //API23和V4都有，图片的内存缓存
-    LruCache <String ,Bitmap> mBitmapLruCache;
-    //网络图片组件
-    com.android.volley.toolbox.NetworkImageView mNetworkImageView;
+    LruCache<String,Bitmap>   mBitmapLruCache;
+     //网络图片组件
+    RequestQueue mRequestQueueOKhttp;
+     com.android.volley.toolbox.NetworkImageView mNetworkImageView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +54,9 @@ public class MainActivity extends AppCompatActivity {
         mNetworkImageView.setDefaultImageResId(R.mipmap.ic_launcher);
         mNetworkImageView.setErrorImageResId(R.mipmap.ic_launcher);
         //创建图片内存缓存的实力
+        mNetworkImageView.setDefaultImageResId(R.mipmap.ic_launcher);
+        mNetworkImageView.setErrorImageResId(R.mipmap.ic_launcher);
+
         mBitmapLruCache=new LruCache<String ,Bitmap>((int) (Runtime.getRuntime().freeMemory()/8)){
             @Override
             protected int sizeOf(String key, Bitmap value) {
@@ -122,12 +126,14 @@ public class MainActivity extends AppCompatActivity {
 
         //第2步 生成一个XXX请求
         //Method.POST  Post方式需要一个map型的参数，注意参数的变化
+        //Method.POST
         Map<String,String> map=new HashMap<String,String>();
         JSONObject params = new JSONObject(map);
 
         //StringRequest stringRequest=new StringRequest(url, new Response.Listener<String>() {
         //JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,url,params, new Response.Listener<JSONObject>() {
         //实际测试时不稳定
+        //JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,url,params,new Response.Listener<JSONObject>() {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET,url,params,
                 new Response.Listener<JSONObject>() {
             @Override
@@ -156,6 +162,10 @@ public class MainActivity extends AppCompatActivity {
         //Method.GET，注意参数的变化
         //StringRequest stringRequest=new StringRequest(url, new Response.Listener<String>() {
         //JsonArrayRequest jsonArrayRequest=new JsonArrayRequest(Request.Method.GET,url,params,new Response.Listener<JSONArray>(){
+
+        //第2步 生成一个XXX请求
+        //Method.POST
+        //StringRequest stringRequest=new StringRequest(url, new Response.Listener<String>() {
         JsonArrayRequest jsonArrayRequest=new JsonArrayRequest(url,new Response.Listener<JSONArray>(){
             @Override
             public void onResponse(JSONArray jsonArray) {
