@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
         //String url="http://www.pingwest.com/wp-content/uploads/2013/04/new_android_wallpaper.jpg";
 
         //第2步 生成一个XXX请求
-        //Method.POST  Post方式需要一个map型的参数
+        //Method.POST  Post方式需要一个map型的参数，注意参数的变化
         Map<String,String> map=new HashMap<String,String>();
         JSONObject params = new JSONObject(map);
 
@@ -149,10 +149,13 @@ public class MainActivity extends AppCompatActivity {
     private void doJsonArrayRequest() {
         String url="http://www.weather.com.cn/adat/sk/101010100.html";
         //String url="http://www.pingwest.com/wp-content/uploads/2013/04/new_android_wallpaper.jpg";
-
+        //Method.POST  Post方式需要一个map型的参数，注意参数的变化
+        Map<String,String> map=new HashMap<String,String>();
+        JSONObject params = new JSONObject(map);
         //第2步 生成一个XXX请求
-        //Method.GET
+        //Method.GET，注意参数的变化
         //StringRequest stringRequest=new StringRequest(url, new Response.Listener<String>() {
+        //JsonArrayRequest jsonArrayRequest=new JsonArrayRequest(Request.Method.GET,url,params,new Response.Listener<JSONArray>(){
         JsonArrayRequest jsonArrayRequest=new JsonArrayRequest(url,new Response.Listener<JSONArray>(){
             @Override
             public void onResponse(JSONArray jsonArray) {
